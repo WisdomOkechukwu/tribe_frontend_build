@@ -11,8 +11,7 @@ export const APP_SCREENS = {
   swap: "Swapping 250 USDT to Naira in Tribe, with the live rate, its 30-second countdown and the swap fee",
   send: "Sending £200 to Amara Obi's UK bank account by Faster Payments, paid from a pound balance",
   cashpoint: "Generating a ₦5,000 Cashpoint: a 12-digit code anyone can redeem",
-  vault: "Token Vault: two PHED electricity tokens waiting to be loaded, each with Copy and I've loaded it",
-  card: "The Cards tab in Tribe: a lime virtual Mastercard with Fund, Withdraw and Details, and recent card payments",
+  vault: "Token Vault: 57 kWh waiting across two PHED electricity tokens, each shown in big digits with Copy and I've loaded it",
 } as const;
 
 export type AppScreenName = keyof typeof APP_SCREENS;

@@ -6,8 +6,6 @@ import { Coin } from "@/components/Coin";
 import { Headline } from "@/components/Headline";
 import { Icon } from "@/components/Icon";
 import { Button } from "@/components/ui/Button";
-import { AppScreen } from "@/components/phone/AppScreen";
-import { PhoneFrame } from "@/components/phone/PhoneFrame";
 import { gsap, MOTION_OK, useGSAP } from "@/lib/gsap";
 import { DOWNLOAD_PATH } from "@/lib/site";
 import cardOnline from "@/public/images/card-online.jpg";
@@ -81,8 +79,7 @@ export function VirtualCard() {
     <section id="cards" ref={root} data-theme="dark" className="relative overflow-hidden bg-orange-500 py-24 text-white md:py-32">
       <div className="stripes pointer-events-none absolute -bottom-24 -left-24 h-[320px] w-[560px] opacity-25 [--stripe-a:#ffffff] [--stripe-b:#2c0548] [--stripe-w:26px]" />
       <div className="container-x relative grid grid-cols-1 items-center gap-14 lg:grid-cols-2 lg:gap-20">
-        <div className="relative order-2 lg:order-1">
-        <div className="relative aspect-[4/5] overflow-hidden rounded-panel">
+        <div className="relative order-2 aspect-[4/5] overflow-hidden rounded-panel lg:order-1">
           <div data-parallax="0.08" className="absolute inset-x-0 -inset-y-[10%]">
             <SafeImage fallbackLabel="Tribe" src={cardOnline} alt="Smiling young Black woman with short red curly hair holding up her Tribe virtual card" fill placeholder="blur" sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
           </div>
@@ -91,13 +88,6 @@ export function VirtualCard() {
               <Icon name="check" className="size-4" />
             </span>
             Netflix · $15.49 approved
-          </div>
-        </div>
-          {/* the real Cards tab, captured from the app (npm run capture:app) */}
-          <div className="absolute -bottom-10 -right-4 hidden sm:block lg:-right-10">
-            <PhoneFrame className="w-[190px]">
-              <AppScreen name="card" />
-            </PhoneFrame>
           </div>
         </div>
 

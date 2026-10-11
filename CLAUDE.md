@@ -87,7 +87,7 @@ Every download CTA links to `/download`. `app/download/route.ts` sends Apple dev
 The phones on the page show the real mobile app. To refresh them after the app's UI changes:
 ```sh
 (cd tribe-mobile && npx expo start --web --port 8084 --clear) &   # wait for "Waiting on http://localhost:8084"
-npm run capture:app                                               # → public/app/{home,crypto,usd,swap,send,cashpoint,vault,card}.webp
+npm run capture:app                                               # → public/app/{home,crypto,usd,swap,send,cashpoint,vault}.webp
 ```
 `scripts/capture-app-screens.mjs` clears the app's storage (fresh seed data), signs in through `/dev?action=showcase` (demo account, verified, fresh `lastActiveAt` so the app lock never shows), emulates iPhone safe areas (59/34pt) at 393×876 (PhoneFrame's screen aspect), draws a 9:41 status bar and home indicator, and writes WebP at 786px wide. Add or change a shot in its `SCREENS` list and the alt text in `components/phone/AppScreen.tsx`. After re-capturing, delete `.next/cache/images` before checking a production build: Next's image optimiser serves the old screenshots from that cache otherwise.
 

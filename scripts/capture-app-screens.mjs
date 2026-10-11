@@ -41,8 +41,6 @@ const SCREENS = [
   { name: "send", path: "/dev?action=showcase&demo=send&to=/send/amount", taps: ["2", "0", "0"] },
   { name: "cashpoint", path: "/cashpoint", taps: ["₦5k"] },
   { name: "vault", path: "/pay/vault" },
-  // re-skins the seeded card in the lime finish first
-  { name: "card", path: "/dev?action=showcase&theme=lime&to=/cards" },
 ];
 
 const INK = "#000000";
