@@ -1,17 +1,21 @@
 "use client";
 
-import Image from "next/image";
+import { SafeImage } from "@/components/SafeImage";
 import { useRef } from "react";
 import { Coin } from "@/components/Coin";
 import { Headline } from "@/components/Headline";
 import { Icon } from "@/components/Icon";
+import { Button } from "@/components/ui/Button";
+import { AppScreen } from "@/components/phone/AppScreen";
+import { PhoneFrame } from "@/components/phone/PhoneFrame";
 import { gsap, MOTION_OK, useGSAP } from "@/lib/gsap";
 import { DOWNLOAD_PATH } from "@/lib/site";
-import cardHand from "@/public/images/card-hand.jpg";
+import cardOnline from "@/public/images/card-online.jpg";
 
 function TribeCard() {
+  // Physical-card depth is a deliberate one-off, deeper than --shadow-float.
   return (
-    <div className="relative aspect-[1.586] w-[min(88vw,420px)] overflow-hidden rounded-[26px] bg-purple-900 p-6 text-white shadow-[0_60px_80px_-40px_rgba(44,5,72,.8),inset_0_1px_0_rgba(255,255,255,.15)]">
+    <div className="relative aspect-[1.586] w-[min(88vw,420px)] overflow-hidden rounded-card bg-purple-900 p-6 text-white shadow-[0_60px_80px_-40px_rgba(44,5,72,.8),inset_0_1px_0_rgba(255,255,255,.15)]">
       <div className="stripes absolute -right-16 -top-20 h-[140%] w-[80%] [--stripe-w:30px]" />
       <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_0%_100%,rgba(44,5,72,.95)_30%,transparent_70%)]" />
       <div className="relative flex h-full flex-col justify-between">
@@ -37,6 +41,7 @@ function TribeCard() {
 
 const POINTS = [
   "Fund it with USDT, BTC, dollars or Naira",
+  "Seven finishes, Mastercard or Visa",
   "Pay Netflix, Spotify, ChatGPT, AliExpress and more",
   "Freeze, unfreeze or bin it in one tap",
 ];
@@ -73,24 +78,33 @@ export function VirtualCard() {
   );
 
   return (
-    <section id="cards" ref={root} className="bg-paper py-24 md:py-32">
-      <div className="container-x grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
-        <div className="relative order-2 aspect-[4/5] overflow-hidden rounded-[36px] lg:order-1">
+    <section id="cards" ref={root} data-theme="dark" className="relative overflow-hidden bg-orange-500 py-24 text-white md:py-32">
+      <div className="stripes pointer-events-none absolute -bottom-24 -left-24 h-[320px] w-[560px] opacity-25 [--stripe-a:#ffffff] [--stripe-b:#2c0548] [--stripe-w:26px]" />
+      <div className="container-x relative grid grid-cols-1 items-center gap-14 lg:grid-cols-2 lg:gap-20">
+        <div className="relative order-2 lg:order-1">
+        <div className="relative aspect-[4/5] overflow-hidden rounded-panel">
           <div data-parallax="0.08" className="absolute inset-x-0 -inset-y-[10%]">
-            <Image src={cardHand} alt="Paying online with a card" fill placeholder="blur" sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
+            <SafeImage fallbackLabel="Tribe" src={cardOnline} alt="Smiling young Black woman with short red curly hair holding up her Tribe virtual card" fill placeholder="blur" sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
           </div>
-          <div className="absolute left-5 top-5 flex items-center gap-2 rounded-full bg-white/95 py-1.5 pl-1.5 pr-4 text-[13px] font-semibold shadow-lg">
+          <div className="absolute bottom-5 left-5 flex items-center gap-2 rounded-full bg-white/95 py-1.5 pl-1.5 pr-4 text-[13px] font-semibold text-ink-900 shadow-pop">
             <span className="grid size-7 place-items-center rounded-full bg-success-500 text-white">
               <Icon name="check" className="size-4" />
             </span>
             Netflix · $15.49 approved
           </div>
         </div>
+          {/* the real Cards tab, captured from the app (npm run capture:app) */}
+          <div className="absolute -bottom-10 -right-4 hidden sm:block lg:-right-10">
+            <PhoneFrame className="w-[190px]">
+              <AppScreen name="card" />
+            </PhoneFrame>
+          </div>
+        </div>
 
         <div className="order-1 lg:order-2">
-          <p className="mb-5 text-[13px] font-semibold uppercase tracking-[0.2em] text-orange-600">Virtual cards</p>
-          <Headline className="text-[clamp(3rem,7.5vw,7rem)] text-purple-900" lines={["One card.", "Every currency."]} />
-          <p data-reveal className="mt-6 max-w-md text-lg leading-relaxed text-ink-500">
+          <p className="mb-5 text-[13px] font-semibold uppercase tracking-[0.2em] text-orange-100">Virtual cards · no more &ldquo;card declined&rdquo;</p>
+          <Headline className="text-[clamp(3rem,7.5vw,7rem)]" lines={["One card.", <span key="2" className="text-purple-900">Every currency.</span>]} />
+          <p data-reveal className="mt-6 max-w-md text-lg leading-relaxed text-orange-50">
             A dollar card that actually works online. Create it in seconds, top it up from any balance, and stop getting declined at checkout.
           </p>
 
@@ -109,21 +123,17 @@ export function VirtualCard() {
 
           <ul data-reveal="children" className="space-y-3">
             {POINTS.map((p) => (
-              <li key={p} className="flex items-center gap-3 text-[16px] font-medium text-ink-700">
-                <span className="grid size-7 shrink-0 place-items-center rounded-full bg-orange-500 text-white">
+              <li key={p} className="flex items-center gap-3 text-[16px] font-medium text-white">
+                <span className="grid size-7 shrink-0 place-items-center rounded-full bg-purple-900 text-white">
                   <Icon name="check" className="size-4" />
                 </span>
                 {p}
               </li>
             ))}
           </ul>
-          <a
-            href={DOWNLOAD_PATH}
-            data-store-cta
-            className="mt-9 inline-flex items-center gap-2 rounded-full bg-purple-500 px-7 py-4 text-[15px] font-semibold text-white transition-colors hover:bg-orange-500"
-          >
-            Create your card <Icon name="arrow" className="size-4" />
-          </a>
+          <Button href={DOWNLOAD_PATH} data-store-cta variant="deep" className="mt-9">
+            Create your card
+          </Button>
         </div>
       </div>
     </section>

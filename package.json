@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "check:visual": "node scripts/visual-check.mjs",
+    "capture:app": "node scripts/capture-app-screens.mjs"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
@@ -27,6 +29,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.3.8",
     "flag-icons": "^7.5.0",
+    "puppeteer-core": "^25.13.0",
     "simple-icons": "^16.34.0",
     "tailwindcss": "^4",
     "typescript": "^5"

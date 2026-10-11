@@ -20,7 +20,7 @@ export function GiftCard({ id, amount, size = "sm", className = "" }: { id: stri
   return (
     <div
       className={`relative flex aspect-[1.6] shrink-0 flex-col justify-between overflow-hidden ${
-        lg ? "w-full rounded-[28px] p-7" : "w-[210px] rounded-[18px] p-4"
+        lg ? "w-full rounded-card p-7" : "w-[210px] rounded-chip p-4"
       } ${className}`}
       style={{ background: b.bg, color: b.fg }}
     >

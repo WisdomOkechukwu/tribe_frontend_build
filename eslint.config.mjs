@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Separate Expo project, gitignored — it has its own tooling.
+    "tribe-mobile/**",
   ]),
 ]);
 

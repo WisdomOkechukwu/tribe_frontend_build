@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { Coin } from "@/components/Coin";
 import { BrandMark, GiftCard } from "@/components/GiftCard";
-import { Icon } from "@/components/Icon";
+import { Button } from "@/components/ui/Button";
+import { Segmented } from "@/components/ui/Segmented";
 import { giftBrand } from "@/lib/giftcards";
 import { assetByCode, formatAmount, GIFT_CARD_BUY_MARKUP } from "@/lib/rates";
 import { DOWNLOAD_PATH } from "@/lib/site";
@@ -27,20 +28,16 @@ export function GiftCardDemo() {
   const sellUsdt = sellNgn * assetByCode("NGN").usd;
 
   return (
-    <div className="w-full max-w-[520px] rounded-[32px] bg-white p-3 shadow-[0_40px_80px_-50px_rgba(44,5,72,.5)] ring-1 ring-ink-900/5">
-      <div className="grid grid-cols-2 gap-1 rounded-[22px] bg-ink-50 p-1 text-[14px] font-semibold" role="tablist" aria-label="Buy or sell">
-        {(["buy", "sell"] as const).map((m) => (
-          <button
-            key={m}
-            role="tab"
-            aria-selected={mode === m}
-            onClick={() => setMode(m)}
-            className={`rounded-[18px] py-2.5 transition-colors ${mode === m ? "bg-white text-ink-900 shadow-sm" : "text-ink-400 hover:text-ink-700"}`}
-          >
-            {m === "buy" ? "Buy a card" : "Sell a card"}
-          </button>
-        ))}
-      </div>
+    <div className="w-full max-w-[520px] rounded-panel bg-white p-3 text-ink-900 shadow-float">
+      <Segmented
+        label="Buy or sell"
+        value={mode}
+        onChange={setMode}
+        options={[
+          { value: "buy", label: "Buy a card" },
+          { value: "sell", label: "Sell a card" },
+        ]}
+      />
 
       <div className="p-3 pt-5">
         <GiftCard id={brand} amount={`$${amount}`} size="lg" />
@@ -52,7 +49,7 @@ export function GiftCardDemo() {
               onClick={() => setBrand(id)}
               aria-pressed={brand === id}
               aria-label={giftBrand(id).name}
-              className={`grid size-11 place-items-center rounded-2xl text-[13px] transition-all ${
+              className={`press grid size-11 place-items-center rounded-chip text-[13px] ${
                 brand === id ? "scale-105 ring-2 ring-orange-500 ring-offset-2" : "opacity-80 hover:opacity-100"
               }`}
               style={{ background: giftBrand(id).bg, color: giftBrand(id).fg }}
@@ -62,22 +59,15 @@ export function GiftCardDemo() {
           ))}
         </div>
 
-        <div className="mt-4 flex gap-2">
-          {AMOUNTS.map((a) => (
-            <button
-              key={a}
-              onClick={() => setAmount(a)}
-              aria-pressed={amount === a}
-              className={`flex-1 rounded-2xl py-2.5 text-[15px] font-semibold transition-colors ${
-                amount === a ? "bg-ink-900 text-white" : "bg-paper text-ink-700 ring-1 ring-ink-900/5 hover:bg-ink-50"
-              }`}
-            >
-              ${a}
-            </button>
-          ))}
-        </div>
+        <Segmented
+          className="mt-4"
+          label="Card value"
+          value={String(amount)}
+          onChange={(v) => setAmount(Number(v))}
+          options={AMOUNTS.map((a) => ({ value: String(a), label: `$${a}` }))}
+        />
 
-        <div className="mt-4 rounded-[22px] bg-paper p-4" aria-live="polite">
+        <div className="mt-4 rounded-card bg-paper p-4" aria-live="polite">
           {mode === "buy" ? (
             <>
               <div className="flex items-center justify-between">
@@ -121,13 +111,9 @@ export function GiftCardDemo() {
           )}
         </div>
 
-        <a
-          href={DOWNLOAD_PATH}
-          data-store-cta
-          className="mt-4 flex items-center justify-center gap-2 rounded-2xl bg-ink-900 py-4 text-[15px] font-semibold text-white transition-colors hover:bg-orange-500"
-        >
-          {mode === "buy" ? `Buy ${b.name} card` : `Sell ${b.name} card`} <Icon name="arrow" className="size-4" />
-        </a>
+        <Button href={DOWNLOAD_PATH} data-store-cta shape="block" className="mt-4">
+          {mode === "buy" ? `Buy ${b.name} card` : `Sell ${b.name} card`}
+        </Button>
         <p className="pt-3 text-center text-[11px] text-ink-300">Illustrative rates. Live rates shown in-app before you confirm.</p>
       </div>
     </div>

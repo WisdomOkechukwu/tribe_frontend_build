@@ -1,13 +1,13 @@
 "use client";
 
-import Image from "next/image";
+import { SafeImage } from "@/components/SafeImage";
 import { useRef } from "react";
 import { StoreButton } from "@/components/StoreButton";
 import { DESKTOP_MOTION, gsap, MOTION_OK, useGSAP } from "@/lib/gsap";
 import lagos from "@/public/images/lagos.jpg";
 
-// Purple-led so the orange "Tribe." never disappears into a band as they sweep past.
-const BANDS = ["h-16 bg-purple-500", "h-6 bg-orange-500", "h-16 bg-purple-700", "h-6 bg-orange-500"];
+// Purple + white only: an orange band would swallow the orange "Tribe." as it sweeps past.
+const BANDS = ["h-16 bg-purple-500", "h-5 bg-white/15", "h-16 bg-purple-700", "h-5 bg-white/15"];
 
 export function FinalCta({ qrSvg }: { qrSvg: string }) {
   const root = useRef<HTMLElement>(null);
@@ -43,9 +43,9 @@ export function FinalCta({ qrSvg }: { qrSvg: string }) {
   );
 
   return (
-    <section ref={root} className="relative flex min-h-dvh items-center overflow-hidden bg-purple-900 py-24 text-white">
+    <section ref={root} data-theme="dark" className="relative flex min-h-dvh items-center overflow-hidden bg-purple-900 py-24 text-white">
       <div data-final-bg className="absolute inset-0 opacity-25 mix-blend-luminosity">
-        <Image src={lagos} alt="" fill placeholder="blur" sizes="100vw" className="object-cover" />
+        <SafeImage src={lagos} alt="" fill placeholder="blur" sizes="100vw" quality={45} className="object-cover" />
       </div>
       <div className="absolute inset-0 bg-linear-to-b from-purple-900/60 via-purple-900/20 to-purple-900" />
 
@@ -70,7 +70,7 @@ export function FinalCta({ qrSvg }: { qrSvg: string }) {
 
         <div data-final-cta className="mt-12 flex flex-col items-center justify-center gap-6 md:flex-row">
           <StoreButton tone="orange" className="scale-110" />
-          <div className="hidden items-center gap-4 rounded-3xl bg-white p-3 pr-6 text-left text-ink-900 md:flex">
+          <div className="hidden items-center gap-4 rounded-card bg-white p-3 pr-6 text-left text-ink-900 md:flex">
             <div className="size-[104px] [&_svg]:h-full [&_svg]:w-full" dangerouslySetInnerHTML={{ __html: qrSvg }} />
             <p className="max-w-[170px] text-[14px] leading-snug">
               <b className="font-semibold">Scan with your phone.</b> We&apos;ll open the right store for you.

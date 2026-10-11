@@ -31,7 +31,7 @@ export function StickyCta() {
         show ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-full opacity-0"
       }`}
     >
-      <StoreButton tone="orange" className="w-full justify-center shadow-[0_20px_40px_-10px_rgba(44,5,72,.6)]" />
+      <StoreButton tone="orange" className="w-full justify-center shadow-pop ring-2 ring-white" />
     </div>
   );
 }

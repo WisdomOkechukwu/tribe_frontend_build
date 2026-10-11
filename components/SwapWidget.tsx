@@ -3,6 +3,7 @@
 import { useId, useState } from "react";
 import { AssetPicker } from "@/components/AssetPicker";
 import { Icon } from "@/components/Icon";
+import { Button } from "@/components/ui/Button";
 import { assetByCode, formatAmount, quote, SWAP_FEE } from "@/lib/rates";
 import { DOWNLOAD_PATH } from "@/lib/site";
 
@@ -25,8 +26,8 @@ export function SwapWidget() {
   };
 
   return (
-    <div className="w-full max-w-[460px] rounded-[32px] bg-paper p-3 text-ink-900 shadow-[0_50px_100px_-40px_rgba(20,0,40,.7)]">
-      <div className="relative rounded-[24px] has-[[aria-expanded=true]]:z-30 bg-white p-5">
+    <div className="w-full max-w-[460px] rounded-panel bg-paper p-3 text-ink-900 shadow-float">
+      <div className="relative rounded-card has-[[aria-expanded=true]]:z-30 bg-white p-5">
         <label htmlFor={`${id}-amt`} className="text-[13px] font-medium text-ink-400">
           You send
         </label>
@@ -47,14 +48,14 @@ export function SwapWidget() {
           type="button"
           onClick={flip}
           aria-label="Flip currencies"
-          className="grid size-12 place-items-center rounded-full border-[5px] border-paper bg-orange-500 text-white transition-transform duration-500 hover:bg-purple-500"
+          className="grid size-12 place-items-center rounded-full border-[5px] border-paper bg-orange-500 text-white transition-[transform,background-color] duration-500 hover:bg-purple-500 active:scale-90"
           style={{ transform: `rotate(${spin}deg)` }}
         >
           <Icon name="swap" className="size-5 rotate-90" />
         </button>
       </div>
 
-      <div className="relative rounded-[24px] has-[[aria-expanded=true]]:z-30 bg-purple-50 p-5">
+      <div className="relative rounded-card has-[[aria-expanded=true]]:z-30 bg-purple-50 p-5">
         <p className="text-[13px] font-medium text-ink-400">They get</p>
         <div className="mt-2 flex items-center justify-between gap-3">
           <output className="min-w-0 truncate font-display text-[40px] font-extrabold leading-none tracking-tight text-purple-700" aria-live="polite">
@@ -83,13 +84,9 @@ export function SwapWidget() {
         </div>
       </dl>
 
-      <a
-        href={DOWNLOAD_PATH}
-        data-store-cta
-        className="mt-5 flex items-center justify-center gap-2 rounded-2xl bg-ink-900 py-4 text-[15px] font-semibold text-white transition-colors hover:bg-orange-500"
-      >
-        Swap it in the app <Icon name="arrow" className="size-4" />
-      </a>
+      <Button href={DOWNLOAD_PATH} data-store-cta shape="block" className="mt-5">
+        Swap it in the app
+      </Button>
       <p className="px-4 pb-2 pt-3 text-center text-[11px] text-ink-300">Illustrative rates. Live quotes are locked in-app for 30 seconds.</p>
     </div>
   );

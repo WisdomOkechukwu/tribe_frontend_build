@@ -7,7 +7,8 @@ import { gsap, MOTION_OK, useGSAP } from "@/lib/gsap";
 
 // TODO(compliance): confirm wording with Tribe's legal team before launch.
 const POINTS: { icon: IconName; title: string; body: string }[] = [
-  { icon: "finger", title: "Face or fingerprint on every send", body: "Even if someone has your phone and your PIN, money doesn't move without you." },
+  { icon: "finger", title: "Your PIN or your face on every send", body: "Every payment needs your transaction PIN or Face ID. Nothing moves without you." },
+  { icon: "phone", title: "Locks itself when you step away", body: "Ten minutes without a tap and Tribe locks. A separate lock PIN or your face opens it again." },
   { icon: "shield", title: "New device? Prove it.", body: "Two-factor checks on every new login, and an alert the second it happens." },
   { icon: "lock", title: "Locked down at rest", body: "Keys and personal data encrypted, with custody handled by licensed partners." },
 ];
@@ -65,7 +66,7 @@ export function Security() {
           </div>
         </div>
 
-        <ul data-reveal="children" className="mt-20 grid gap-10 border-t border-ink-900/10 pt-10 md:grid-cols-3 md:gap-12">
+        <ul data-reveal="children" className="mt-20 grid gap-10 border-t border-ink-900/10 pt-10 md:grid-cols-2 md:gap-12 lg:grid-cols-4">
           {POINTS.map((p) => (
             <li key={p.title}>
               <Icon name={p.icon} className="size-7 text-orange-500" />

@@ -1,46 +1,53 @@
 "use client";
 
-import { useRef, useState, type ComponentType } from "react";
+import { useRef, useState } from "react";
 import { Headline } from "@/components/Headline";
 import { PhoneFrame } from "@/components/phone/PhoneFrame";
-import { CashpointsScreen, FiatScreen, SwapScreen, TokenVaultScreen, WalletScreen } from "@/components/phone/screens";
+import { AppScreen, type AppScreenName } from "@/components/phone/AppScreen";
 import { StoreBadges } from "@/components/StoreButton";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 
-const STEPS: { kicker: string; title: string; body: string; Screen: ComponentType; bg: string }[] = [
+const STEPS: { kicker: string; title: string; body: string; screen: AppScreenName; bg: string }[] = [
   {
     kicker: "Crypto wallet",
     title: "Your bag, all in one place.",
     body: "BTC, ETH, USDT, USDC, SOL and more — hold them, watch them, move them. Real balances in Naira so you always know what you're actually holding.",
-    Screen: WalletScreen,
+    screen: "crypto",
     bg: "#fbf8f5",
   },
   {
     kicker: "Global accounts",
     title: "Get paid like you live abroad.",
     body: "USD, GBP and EUR account details in your name. Freelance clients, family overseas, payouts from anywhere — it all lands here.",
-    Screen: FiatScreen,
+    screen: "usd",
     bg: "#e6f4ff",
+  },
+  {
+    kicker: "Send abroad",
+    title: "Pay anyone, anywhere.",
+    body: "Pick a country and send by Faster Payments, ACH, SEPA, mobile money and more, or to any Tribe @username for free. Pay from any balance and we convert on the way.",
+    screen: "send",
+    bg: "#eaf6ee",
   },
   {
     kicker: "Swap",
     title: "Change it up whenever.",
     body: "Token to token, token to fiat, fiat to fiat. Lock your rate, tap once, done. No P2P back-and-forth, no waiting on a stranger.",
-    Screen: SwapScreen,
+    screen: "swap",
     bg: "#f0e7f7",
   },
   {
     kicker: "Cashpoints",
     title: "Cash, packed into 12 digits.",
     body: "Turn Naira into a Cashpoint code and hand it to anyone. Tribe users redeem it instantly; new users redeem it the moment they sign up.",
-    Screen: CashpointsScreen,
+    screen: "cashpoint",
     bg: "#ffefe9",
   },
   {
     kicker: "Token Vault",
     title: "Never lose a light token again.",
     body: "Every electricity token you buy is saved automatically. Mark it as loaded when you punch it in, so you always know what's used and what isn't.",
-    Screen: TokenVaultScreen,
+    screen: "vault",
     bg: "#fffbeb",
   },
 ];
@@ -82,7 +89,7 @@ export function PhoneStory() {
 
       <div className="container-x lg:grid lg:grid-cols-[1fr_minmax(0,460px)] lg:gap-16">
         <ol className="pb-16 pt-12 lg:pb-[20vh] lg:pt-[8vh]">
-          {STEPS.map(({ kicker, title, body, Screen }, i) => (
+          {STEPS.map(({ kicker, title, body, screen }, i) => (
             <li key={kicker} data-step className="flex flex-col gap-10 py-12 lg:min-h-[78vh] lg:justify-center lg:py-0">
               <div data-reveal>
               <div className={`max-w-lg transition-opacity duration-500 ${i === active ? "lg:opacity-100" : "lg:opacity-30"}`}>
@@ -97,7 +104,7 @@ export function PhoneStory() {
               </div>
               <div className="flex justify-center lg:hidden">
                 <PhoneFrame className="w-[250px]">
-                  <Screen />
+                  <AppScreen name={screen} />
                 </PhoneFrame>
               </div>
             </li>
@@ -108,7 +115,7 @@ export function PhoneStory() {
           <div className="sticky top-0 flex h-dvh items-center justify-center">
             <div className="relative">
               <PhoneFrame className="w-[300px]">
-                {STEPS.map(({ kicker, Screen }, i) => (
+                {STEPS.map(({ kicker, screen }, i) => (
                   <div
                     key={kicker}
                     aria-hidden={i !== active}
@@ -118,7 +125,7 @@ export function PhoneStory() {
                       transform: `translateY(${i === active ? 0 : i < active ? -24 : 24}px) scale(${i === active ? 1 : 0.97})`,
                     }}
                   >
-                    <Screen />
+                    <AppScreen name={screen} />
                   </div>
                 ))}
               </PhoneFrame>

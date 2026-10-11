@@ -7,6 +7,8 @@ import { gsap, MOTION_OK, ScrollTrigger, useGSAP } from "@/lib/gsap";
  *  - [data-headline]  masked line-by-line rise of its [data-line] children
  *  - [data-reveal]    fade/rise in (optional value = stagger children instead)
  *  - [data-parallax]  drift by the given fraction of its height while in view
+ *  - [data-scribble]  SVG path (pathLength=1) draws itself in
+ *  - [data-sticker]   wobble around the tilt given as the attribute value
  */
 export function ScrollMotion() {
   useGSAP(() => {
@@ -34,6 +36,25 @@ export function ScrollMotion() {
           stagger: 0.09,
           scrollTrigger: { trigger: el, start: "top 90%", once: true },
         });
+      });
+
+      // Hand-drawn marks draw themselves in.
+      gsap.utils.toArray<SVGPathElement>("[data-scribble]").forEach((path) => {
+        gsap.fromTo(
+          path,
+          { strokeDashoffset: 1 },
+          { strokeDashoffset: 0, duration: 0.9, ease: "power2.inOut", delay: 0.35, scrollTrigger: { trigger: path.closest("svg"), start: "top 85%", once: true } },
+        );
+      });
+
+      // Stickers wobble around their own tilt as the page moves.
+      gsap.utils.toArray<HTMLElement>("[data-sticker]").forEach((el) => {
+        const base = Number(el.dataset.sticker) || 0;
+        gsap.fromTo(
+          el,
+          { rotate: base - 7, scale: 0.92 },
+          { rotate: base + 5, scale: 1, ease: "none", scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: 0.6 } },
+        );
       });
 
       gsap.utils.toArray<HTMLElement>("[data-parallax]").forEach((el) => {

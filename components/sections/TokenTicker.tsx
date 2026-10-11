@@ -17,7 +17,7 @@ export function TokenTicker() {
     <section ref={root} aria-label="Supported currencies and tokens" className="overflow-hidden border-y border-ink-900/5 bg-paper py-16 md:py-20">
       <div className="container-x mb-10 flex flex-wrap items-end justify-between gap-4">
         <h2 className="display text-[clamp(2.2rem,5vw,4rem)] text-ink-900">
-          40+ tokens. <span className="text-purple-500">12 currencies.</span> One wallet.
+          40+ tokens. <span className="text-purple-500">7 currencies.</span> One wallet.
         </h2>
         <a href={DOWNLOAD_PATH} data-store-cta className="text-[15px] font-semibold text-orange-600 underline decoration-2 underline-offset-4 hover:text-purple-600">
           See them all in the app

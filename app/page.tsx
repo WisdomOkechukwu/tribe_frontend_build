@@ -1,4 +1,6 @@
 import QRCode from "qrcode";
+import { Suspense, type ReactNode } from "react";
+import { KineticBand } from "@/components/KineticBand";
 import { ScrollMotion } from "@/components/ScrollMotion";
 import { StickyCta } from "@/components/StickyCta";
 import { BillsAndGiftCards } from "@/components/sections/BillsAndGiftCards";
@@ -16,6 +18,10 @@ import { Vault } from "@/components/sections/Vault";
 import { VirtualCard } from "@/components/sections/VirtualCard";
 import { DOWNLOAD_PATH, SITE_URL } from "@/lib/site";
 
+// Each section is its own Suspense boundary so React hydrates them one at a time and yields to
+// the browser in between — one giant hydration task was holding back first paint on phones.
+const Island = ({ children }: { children: ReactNode }) => <Suspense>{children}</Suspense>;
+
 export default async function Home() {
   // Generated from our own URL at build time — safe to inline.
   const qrSvg = await QRCode.toString(new URL(DOWNLOAD_PATH, SITE_URL).toString(), {
@@ -26,23 +32,56 @@ export default async function Home() {
 
   return (
     <>
-      <Nav />
+      <Island>
+          <Nav />
+        </Island>
       <main>
-        <Hero />
-        <SwapBand />
-        <PhoneStory />
-        <BillsAndGiftCards />
-        <Vault />
-        <TokenTicker />
-        <VirtualCard />
-        <Cashpoints />
-        <Security />
-        <Testimonials />
-        <FinalCta qrSvg={qrSvg} />
+        <Island>
+          <Hero />
+        </Island>
+        <Island>
+          <SwapBand />
+        </Island>
+        <Island>
+          <PhoneStory />
+        </Island>
+        <Island>
+          <KineticBand />
+        </Island>
+        <Island>
+          <BillsAndGiftCards />
+        </Island>
+        <Island>
+          <Vault />
+        </Island>
+        <Island>
+          <TokenTicker />
+        </Island>
+        <Island>
+          <VirtualCard />
+        </Island>
+        <Island>
+          <Cashpoints />
+        </Island>
+        <Island>
+          <Security />
+        </Island>
+        <Island>
+          <Testimonials />
+        </Island>
+        <Island>
+          <FinalCta qrSvg={qrSvg} />
+        </Island>
       </main>
-      <Footer />
-      <StickyCta />
-      <ScrollMotion />
+      <Island>
+          <Footer />
+        </Island>
+      <Island>
+          <StickyCta />
+        </Island>
+      <Island>
+          <ScrollMotion />
+        </Island>
     </>
   );
 }

@@ -13,21 +13,3 @@ export function PhoneFrame({ children, className = "" }: { children: ReactNode; 
     </div>
   );
 }
-
-export function StatusBar({ dark = false }: { dark?: boolean }) {
-  return (
-    <div className={`flex items-center justify-between px-6 pb-1 pt-3 text-[11px] font-semibold ${dark ? "text-white" : "text-ink-900"}`}>
-      <span>9:41</span>
-      <span className="flex items-center gap-1">
-        <span className="flex items-end gap-[2px]">
-          {[4, 6, 8, 10].map((h) => (
-            <span key={h} className="w-[3px] rounded-sm bg-current" style={{ height: h }} />
-          ))}
-        </span>
-        <span className="ml-1 h-[10px] w-[20px] rounded-[3px] border border-current p-[1px]">
-          <span className="block h-full w-3/4 rounded-[1px] bg-current" />
-        </span>
-      </span>
-    </div>
-  );
-}

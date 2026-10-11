@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { Bricolage_Grotesque, Poppins } from "next/font/google";
+import { Bricolage_Grotesque, Caveat, Poppins } from "next/font/google";
+import { Preloader } from "@/components/Preloader";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
@@ -7,13 +8,22 @@ import "./globals.css";
 const bricolage = Bricolage_Grotesque({
   variable: "--font-bricolage",
   subsets: ["latin"],
-  axes: ["opsz", "wdth"],
+  // wdth gives the condensed display caps; opsz was unused weight in the font file
+  axes: ["wdth"],
 });
 
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600"],
+});
+
+const caveat = Caveat({
+  variable: "--font-caveat",
+  subsets: ["latin"],
+  weight: ["700"],
+  // margin notes only, all below the fold
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -34,8 +44,10 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${bricolage.variable} ${poppins.variable} antialiased`}>
+    // the preloader script toggles classes on <html> before hydration
+    <html lang="en" suppressHydrationWarning className={`${bricolage.variable} ${poppins.variable} ${caveat.variable} antialiased`}>
       <body className="min-h-dvh">
+        <Preloader />
         <SmoothScroll />
         {children}
       </body>

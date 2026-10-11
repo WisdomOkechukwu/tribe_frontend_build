@@ -1,7 +1,8 @@
-import Image from "next/image";
+import { SafeImage } from "@/components/SafeImage";
 import { Headline } from "@/components/Headline";
 import { Icon } from "@/components/Icon";
 import { TokenVault } from "@/components/TokenVault";
+import { Button } from "@/components/ui/Button";
 import { DOWNLOAD_PATH } from "@/lib/site";
 import lights from "@/public/images/lights.jpg";
 
@@ -11,11 +12,11 @@ const STEPS = [
     body: "Token, units, meter number, provider and time — stored the second you pay. No more digging through SMS.",
   },
   {
-    title: "Unloaded tokens stay flagged",
-    body: "Anything you haven't punched in wears a “Not loaded yet” badge, and we nudge you so units you paid for never go missing.",
+    title: "Unloaded tokens wait up top",
+    body: "Anything you haven't punched in sits under “To load” with a one-tap Copy, so units you paid for never go missing.",
   },
   {
-    title: "Tap “Loaded” and it moves to Used",
+    title: "Tap “I've loaded it” and it moves to Loaded",
     body: "Stamped with the date, so nobody in the house loads the same token twice or swears they already did.",
   },
 ];
@@ -33,8 +34,8 @@ export function Vault() {
             You paid for light, the token came in, then it got buried under forty bank alerts. Did you load it? Did your sister already use it? Is the meter about to beep? We built Token Vault so you never have to guess again.
           </p>
 
-          <div data-reveal className="relative mt-10 aspect-[16/9] max-w-lg overflow-hidden rounded-[28px]">
-            <Image src={lights} alt="City lights coming on at dusk" fill placeholder="blur" sizes="(min-width: 1024px) 512px, 100vw" className="object-cover" />
+          <div data-reveal className="relative mt-10 aspect-[16/9] max-w-lg overflow-hidden rounded-panel">
+            <SafeImage fallbackLabel="Token Vault" src={lights} alt="City lights coming on at dusk" fill placeholder="blur" sizes="(min-width: 1024px) 512px, 100vw" className="object-cover" />
             <span className="absolute bottom-4 left-4 rounded-full bg-ink-900/80 px-3 py-1.5 text-[12px] font-medium text-white backdrop-blur">
               NEPA took light? At least your token is safe.
             </span>
@@ -49,7 +50,7 @@ export function Vault() {
       </div>
 
       <div className="container-x mt-20">
-        <ol data-reveal className="grid gap-px overflow-hidden rounded-[28px] bg-orange-200 md:grid-cols-3">
+        <ol data-reveal className="grid gap-px overflow-hidden rounded-panel bg-orange-200 md:grid-cols-3">
           {STEPS.map((s, i) => (
             <li key={s.title} className="bg-orange-50 p-7 md:p-9">
               <span className="display text-6xl text-orange-500">{i + 1}</span>
@@ -58,16 +59,9 @@ export function Vault() {
             </li>
           ))}
         </ol>
-        <a
-          href={DOWNLOAD_PATH}
-          data-store-cta
-          className="group mt-10 inline-flex items-center gap-3 rounded-full bg-ink-900 py-4 pl-7 pr-5 text-[15px] font-semibold text-white transition-colors hover:bg-orange-500"
-        >
+        <Button href={DOWNLOAD_PATH} data-store-cta className="mt-10">
           Never lose a token again
-          <span className="grid size-8 place-items-center rounded-full bg-white/15 transition-transform group-hover:translate-x-1">
-            <Icon name="arrow" className="size-4" />
-          </span>
-        </a>
+        </Button>
       </div>
     </section>
   );

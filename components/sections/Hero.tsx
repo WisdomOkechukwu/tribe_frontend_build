@@ -4,13 +4,17 @@ import { useRef } from "react";
 import { BillerTile } from "@/components/BillerTile";
 import { Coin } from "@/components/Coin";
 import { Headline } from "@/components/Headline";
+import { RotatingPhrase } from "@/components/RotatingPhrase";
+import { Sticker } from "@/components/Sticker";
 import { Icon } from "@/components/Icon";
 import { PhoneFrame } from "@/components/phone/PhoneFrame";
-import { WalletScreen } from "@/components/phone/screens";
+import { AppScreen } from "@/components/phone/AppScreen";
 import { StoreButton } from "@/components/StoreButton";
-import { gsap, MOTION_OK, useGSAP } from "@/lib/gsap";
+import { gsap, MOTION_OK, ScrollTrigger, useGSAP } from "@/lib/gsap";
 
 // x/y are % of the stage; dx/dy is where each coin flies as you scroll away.
+const PHRASES = ["like you.", "at 2am.", "across borders.", "with no wahala."];
+
 const COINS = [
   { code: "BTC", x: 13, y: 10, size: 104, dx: -260, dy: -140, mobile: true },
   { code: "USDT", x: 79, y: 4, size: 88, dx: 240, dy: -180, mobile: true },
@@ -33,14 +37,24 @@ export function Hero() {
         const intro = gsap.timeline({ defaults: { ease: "expo.out" } });
         intro
           .from("[data-hero-fade]", { y: 24, autoAlpha: 0, duration: 1, stagger: 0.08 }, 0.35)
-          .from("[data-hero-phone]", { yPercent: 40, rotate: -14, autoAlpha: 0, duration: 1.6 }, 0.2)
+          // the paragraph is the LCP element: rise only, never hidden, so it paints on first frame
+          .from("[data-hero-rise]", { y: 24, duration: 1 }, 0.4)
+          // the phone holds a real screenshot (an LCP candidate): rise only, never hidden
+          .from("[data-hero-phone]", { yPercent: 40, rotate: -14, duration: 1.6 }, 0.2)
           .from("[data-hero-disc]", { scale: 0.6, autoAlpha: 0, duration: 1.8 }, 0)
           .from("[data-coin]", { scale: 0, rotate: -90, duration: 1.2, ease: "back.out(1.6)", stagger: 0.06 }, 0.5)
           .from("[data-hero-chip]", { x: (i) => (i ? 40 : -40), autoAlpha: 0, duration: 1, stagger: 0.15 }, 1.1);
 
         // idle bob so the coins never feel pasted on
-        gsap.utils.toArray<HTMLElement>("[data-coin-inner]").forEach((el, i) => {
-          gsap.to(el, { y: i % 2 ? 10 : -12, rotate: i % 2 ? 6 : -6, duration: 2.4 + i * 0.3, ease: "sine.inOut", yoyo: true, repeat: -1 });
+        const bobs = gsap.utils.toArray<HTMLElement>("[data-coin-inner]").map((el, i) =>
+          gsap.to(el, { y: i % 2 ? 10 : -12, rotate: i % 2 ? 6 : -6, duration: 2.4 + i * 0.3, ease: "sine.inOut", yoyo: true, repeat: -1 }),
+        );
+        // no point animating coins nobody can see
+        ScrollTrigger.create({
+          trigger: root.current,
+          start: "top bottom",
+          end: "bottom top",
+          onToggle: (self) => bobs.forEach((t) => (self.isActive ? t.resume() : t.pause())),
         });
 
         const scroll = gsap.timeline({
@@ -75,17 +89,20 @@ export function Hero() {
           className="text-[clamp(2.9rem,11.5vw,10.5rem)] text-purple-900"
           lines={[
             "Money that moves",
-            <>
-              like <span className="text-orange-500">you.</span>
-            </>,
+            <RotatingPhrase key="rot" phrases={PHRASES} className="text-orange-500" />,
           ]}
         />
-        <p data-hero-fade className="mt-6 max-w-xl text-[17px] leading-relaxed text-ink-500 md:text-lg">
-          Hold crypto and dollars, swap anything for anything, pay bills with whatever you&apos;ve got, and send money to anyone on Tribe before they finish typing &ldquo;send am&rdquo;.
+        <span className="absolute right-[3%] top-[30%] hidden lg:block">
+          <Sticker shape="burst" tone="yellow" rotate={12}>
+            0 wahala
+          </Sticker>
+        </span>
+        <p data-hero-rise className="mt-6 max-w-xl text-[17px] leading-relaxed text-ink-500 md:text-lg">
+          Hold crypto and dollars, swap anything for anything, pay bills with whatever you&apos;ve got, and pass cash to anyone with a 12-digit code. Sapa-proof, no cap.
         </p>
         <div data-hero-fade className="mt-8 flex flex-col items-center gap-4 sm:flex-row">
           <StoreButton tone="dark" />
-          <a href="#how" className="group inline-flex items-center gap-2 px-3 py-3 text-[15px] font-semibold text-purple-700">
+          <a href="#how" className="press group inline-flex items-center gap-2 rounded-full px-4 py-3 text-[15px] font-semibold text-purple-700 hover:bg-purple-50">
             See how it works
             <Icon name="arrow" className="size-4 rotate-90 transition-transform group-hover:translate-y-1" />
           </a>
@@ -114,19 +131,19 @@ export function Hero() {
           {/* tilt lives in the inline transform so GSAP can tween it */}
           <div data-hero-phone style={{ transform: "rotate(-6deg)" }}>
             <PhoneFrame className="w-[250px] md:w-[300px]">
-              <WalletScreen />
+              <AppScreen name="home" priority />
             </PhoneFrame>
           </div>
         </div>
 
-        <div data-hero-chip className="absolute left-[4%] top-[30%] z-30 hidden items-center gap-3 rounded-2xl bg-white p-3 pr-5 shadow-[0_20px_40px_-20px_rgba(44,5,72,.4)] lg:flex">
+        <div data-hero-chip className="absolute left-[4%] top-[30%] z-30 hidden items-center gap-3 rounded-card bg-white p-3 pr-5 shadow-pop lg:flex">
           <Coin code="USD" size={36} />
           <div className="leading-tight">
             <p className="text-[13px] font-semibold text-success-600">+$450.00</p>
             <p className="text-[11px] text-ink-300">From Upwork · just now</p>
           </div>
         </div>
-        <div data-hero-chip className="absolute right-[3%] top-[56%] z-30 hidden items-center gap-3 rounded-2xl bg-ink-900 p-3 pr-5 text-white shadow-[0_20px_40px_-20px_rgba(44,5,72,.6)] lg:flex">
+        <div data-hero-chip className="absolute right-[3%] top-[56%] z-30 hidden items-center gap-3 rounded-card bg-ink-900 p-3 pr-5 text-white shadow-pop lg:flex">
           <BillerTile id="phed" size={36} />
           <div className="leading-tight">
             <p className="text-[13px] font-semibold">34.2 kWh token saved</p>

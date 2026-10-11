@@ -59,9 +59,9 @@ export function StoreButton({ tone = "dark", className = "" }: { tone?: Tone; cl
     <a
       href={DOWNLOAD_PATH}
       data-store-cta
-      className={`group inline-flex items-center gap-3 rounded-2xl py-3 pl-4 pr-6 transition-colors duration-300 ${TONES[tone]} ${className}`}
+      className={`press group inline-flex items-center gap-3 rounded-card py-3 pl-4 pr-6 ${TONES[tone]} ${className}`}
     >
-      <span className="grid size-9 place-items-center rounded-xl bg-white/10 group-hover:bg-white/15">
+      <span className="grid size-9 place-items-center rounded-chip bg-white/10 group-hover:bg-white/15">
         {store === "android" ? (
           <PlayGlyph className="size-5" />
         ) : store === "ios" ? (
@@ -88,14 +88,14 @@ export function StoreBadges({ tone = "dark", className = "" }: { tone?: "dark" |
       : "bg-white text-ink-900 ring-1 ring-ink-900/10 hover:bg-purple-50";
   return (
     <div className={`flex flex-wrap gap-3 ${className}`}>
-      <a href={APP_STORE_URL} data-store-cta className={`inline-flex items-center gap-2.5 rounded-xl px-4 py-2.5 transition-colors ${base}`}>
+      <a href={APP_STORE_URL} data-store-cta className={`press inline-flex items-center gap-2.5 rounded-chip px-4 py-2.5 ${base}`}>
         <AppleGlyph className="size-6" />
         <span className="flex flex-col leading-tight">
           <span className="text-[10px] opacity-70">Download on the</span>
           <span className="text-[15px] font-semibold">App Store</span>
         </span>
       </a>
-      <a href={PLAY_STORE_URL} data-store-cta className={`inline-flex items-center gap-2.5 rounded-xl px-4 py-2.5 transition-colors ${base}`}>
+      <a href={PLAY_STORE_URL} data-store-cta className={`press inline-flex items-center gap-2.5 rounded-chip px-4 py-2.5 ${base}`}>
         <PlayGlyph className="size-5" />
         <span className="flex flex-col leading-tight">
           <span className="text-[10px] uppercase opacity-70">Get it on</span>

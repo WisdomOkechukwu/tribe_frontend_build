@@ -8,7 +8,7 @@ import tribeIcon from "@/public/brand/tribe-icon.png";
 export function Logo() {
   return (
     <a href="#top" className="flex items-center" aria-label="Tribe home">
-      <Image src={tribeIcon} alt="Tribe" className="h-11 w-auto" priority />
+      <Image src={tribeIcon} alt="Tribe" className="h-12 w-auto" priority />
     </a>
   );
 }
@@ -27,7 +27,7 @@ export function Nav() {
     <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3 md:px-6">
       <nav
         className={`mx-auto flex max-w-[1320px] items-center justify-between rounded-full py-2 pl-5 pr-2 transition-all duration-500 ${
-          scrolled ? "bg-white/90 shadow-[0_8px_30px_-12px_rgba(44,5,72,.25)] ring-1 ring-ink-900/5 backdrop-blur-md" : "bg-transparent"
+          scrolled ? "bg-white/85 shadow-lift ring-1 ring-purple-100/60 backdrop-blur-md" : "bg-transparent"
         }`}
       >
         <Logo />
@@ -43,7 +43,7 @@ export function Nav() {
         <a
           href={DOWNLOAD_PATH}
           data-store-cta
-          className="rounded-full bg-orange-500 px-5 py-2.5 text-[14px] font-semibold text-white transition-colors hover:bg-purple-500"
+          className="press rounded-full bg-orange-500 px-5 py-2.5 text-[14px] font-semibold text-white hover:bg-purple-500"
         >
           Get the app
         </a>

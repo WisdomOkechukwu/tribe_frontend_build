@@ -1,7 +1,8 @@
 "use client";
 
-import Image, { type StaticImageData } from "next/image";
-import { useRef } from "react";
+import type { StaticImageData } from "next/image";
+import { SafeImage } from "@/components/SafeImage";
+import { useRef, type PointerEvent } from "react";
 import { Headline } from "@/components/Headline";
 import { Icon } from "@/components/Icon";
 import t1 from "@/public/images/t1.jpg";
@@ -9,45 +10,76 @@ import t2 from "@/public/images/t2.jpg";
 import t3 from "@/public/images/t3.jpg";
 import t4 from "@/public/images/t4.jpg";
 
-// TODO(content): placeholder voices — swap for real customer quotes (with consent) before launch.
-const QUOTES: { img: StaticImageData; quote: string; name: string; meta: string; tone: string }[] = [
+// TODO(content): placeholder voices and handles — swap for real customer posts (with consent) before launch.
+// No like/follower counts on purpose: invented social proof is worse than none.
+const POSTS: { img: StaticImageData; quote: string; name: string; handle: string; city: string; tag: string; tilt: string; accent: string }[] = [
   {
     img: t1,
     quote: "My clients pay me in dollars, I swap what I need to Naira and keep the rest. No more begging a P2P vendor at midnight.",
     name: "Chiamaka",
-    meta: "Freelance designer · Lagos",
-    tone: "bg-purple-500 text-white",
+    handle: "@chiamaka.designs",
+    city: "Lagos",
+    tag: "Swap",
+    tilt: "-rotate-2",
+    accent: "bg-purple-500",
   },
   {
     img: t3,
     quote: "I paid for my Spotify, my data and my mum's light in one sitting. With USDT. That's crazy to me.",
     name: "Kwame",
-    meta: "Software dev · Accra",
-    tone: "bg-orange-500 text-white",
+    handle: "@kwame.codes",
+    city: "Accra",
+    tag: "Bills",
+    tilt: "rotate-1",
+    accent: "bg-orange-500",
   },
   {
     img: t2,
     quote: "Token Vault saved my life. My roommates and I finally stopped arguing about who loaded the last token.",
     name: "Zainab",
-    meta: "Student · Abuja",
-    tone: "bg-warning-400 text-ink-900",
+    handle: "@zainab_unbothered",
+    city: "Abuja",
+    tag: "Token Vault",
+    tilt: "-rotate-1",
+    accent: "bg-warning-400",
   },
   {
     img: t4,
-    quote: "I sent my cousin a Cashpoint code on WhatsApp. He wasn't even on Tribe — signed up, redeemed it, done in two minutes.",
+    quote: "Sent my cousin a Cashpoint code on WhatsApp. He wasn't even on Tribe — signed up, redeemed it, done in two minutes.",
     name: "Tunde",
-    meta: "Content creator · Ibadan",
-    tone: "bg-ink-900 text-white",
+    handle: "@tunde.makes",
+    city: "Ibadan",
+    tag: "Cashpoints",
+    tilt: "rotate-2",
+    accent: "bg-ink-900",
   },
 ];
 
 export function Testimonials() {
   const scroller = useRef<HTMLDivElement>(null);
-  const nudge = (dir: 1 | -1) => scroller.current?.scrollBy({ left: dir * Math.min(440, window.innerWidth * 0.8), behavior: "smooth" });
+  const drag = useRef<{ x: number; left: number } | null>(null);
+
+  const nudge = (dir: 1 | -1) => scroller.current?.scrollBy({ left: dir * Math.min(420, window.innerWidth * 0.8), behavior: "smooth" });
+
+  // Mouse drag-to-scroll; touch already scrolls natively.
+  const onDown = (e: PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType !== "mouse" || !scroller.current) return;
+    drag.current = { x: e.clientX, left: scroller.current.scrollLeft };
+    scroller.current.style.scrollSnapType = "none";
+  };
+  const onMove = (e: PointerEvent<HTMLDivElement>) => {
+    if (!drag.current || !scroller.current) return;
+    scroller.current.scrollLeft = drag.current.left - (e.clientX - drag.current.x);
+  };
+  const onUp = () => {
+    if (!scroller.current) return;
+    drag.current = null;
+    scroller.current.style.scrollSnapType = "";
+  };
 
   return (
     <section className="overflow-hidden bg-paper pb-24 md:pb-32">
-      <div className="container-x grid gap-10 lg:grid-cols-[minmax(0,360px)_1fr] lg:gap-14">
+      <div className="container-x grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,360px)_1fr] lg:gap-14">
         <div className="flex flex-col justify-between gap-8">
           <div>
             <Headline className="text-[clamp(3rem,6.5vw,6rem)] text-ink-900" lines={["For people", "going places."]} />
@@ -60,8 +92,8 @@ export function Testimonials() {
               <button
                 key={d}
                 onClick={() => nudge(d)}
-                aria-label={d < 0 ? "Previous" : "Next"}
-                className="grid size-14 place-items-center rounded-full border-2 border-ink-900 text-ink-900 transition-colors hover:bg-ink-900 hover:text-white"
+                aria-label={d < 0 ? "Previous posts" : "Next posts"}
+                className="press grid size-14 place-items-center rounded-full border-2 border-ink-900 text-ink-900 hover:bg-ink-900 hover:text-white"
               >
                 <Icon name={d < 0 ? "arrowLeft" : "arrow"} className="size-5" />
               </button>
@@ -71,18 +103,35 @@ export function Testimonials() {
 
         <div
           ref={scroller}
-          className="-mr-5 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 pr-5 [scrollbar-width:none] md:-mr-10 md:pr-10 [&::-webkit-scrollbar]:hidden"
+          onPointerDown={onDown}
+          onPointerMove={onMove}
+          onPointerUp={onUp}
+          onPointerLeave={onUp}
+          className="-mr-5 flex cursor-grab snap-x snap-mandatory gap-6 overflow-x-auto px-2 py-8 pr-5 select-none [scrollbar-width:none] active:cursor-grabbing md:-mr-10 md:pr-10 [&::-webkit-scrollbar]:hidden"
         >
-          {QUOTES.map((q) => (
-            <figure key={q.name} className={`flex w-[min(82vw,380px)] shrink-0 snap-start flex-col overflow-hidden rounded-[32px] ${q.tone}`}>
-              <div className="relative aspect-[4/3.4]">
-                <Image src={q.img} alt={q.name} fill placeholder="blur" sizes="380px" className="object-cover" />
+          {POSTS.map((p) => (
+            <article
+              key={p.handle}
+              className={`w-[min(80vw,360px)] shrink-0 snap-start rounded-panel bg-white p-4 shadow-lift transition-transform duration-500 hover:rotate-0 ${p.tilt}`}
+            >
+              <header className="flex items-center gap-3 px-1">
+                <span className="relative size-11 shrink-0 overflow-hidden rounded-full ring-2 ring-white">
+                  <SafeImage src={p.img} alt="" fill sizes="44px" className="object-cover" draggable={false} />
+                </span>
+                <div className="min-w-0 flex-1 leading-tight">
+                  <p className="text-[15px] font-semibold text-ink-900">{p.name}</p>
+                  <p className="truncate text-[12px] text-ink-400">
+                    {p.handle} · {p.city}
+                  </p>
+                </div>
+                <span className={`size-3 shrink-0 rounded-full ${p.accent}`} aria-hidden />
+              </header>
+              <blockquote className="px-1 pt-4 text-[17px] font-medium leading-snug text-ink-800">{p.quote}</blockquote>
+              <div className="relative mt-4 aspect-[4/3] overflow-hidden rounded-card">
+                <SafeImage src={p.img} alt={`${p.name}, a Tribe user`} fill placeholder="blur" sizes="360px" className="object-cover" draggable={false} />
+                <span className="absolute bottom-3 left-3 rounded-full bg-white/95 px-3 py-1 text-[12px] font-semibold text-ink-900 shadow-lift">#{p.tag.replace(/\s/g, "")}</span>
               </div>
-              <blockquote className="flex-1 p-6 text-[19px] font-medium leading-snug">&ldquo;{q.quote}&rdquo;</blockquote>
-              <figcaption className="px-6 pb-6 text-[14px]">
-                <span className="font-semibold">{q.name}</span> <span className="opacity-70">· {q.meta}</span>
-              </figcaption>
-            </figure>
+            </article>
           ))}
         </div>
       </div>

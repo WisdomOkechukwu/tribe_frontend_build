@@ -3,6 +3,7 @@
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { Coin } from "@/components/Coin";
 import { Icon } from "@/components/Icon";
+import { Segmented } from "@/components/ui/Segmented";
 import { ASSETS, type Asset } from "@/lib/rates";
 
 type Tab = "all" | "crypto" | "fiat";
@@ -142,8 +143,8 @@ export function AssetPicker({
             show();
           }
         }}
-        className={`group flex items-center gap-2 rounded-full bg-white py-1.5 pl-1.5 pr-3 transition-all duration-200 hover:-translate-y-px hover:shadow-[0_8px_20px_-8px_rgba(44,5,72,.35)] ${
-          open ? "shadow-[0_0_0_3px_#d1b4e5]" : "shadow-[0_1px_0_rgba(0,0,0,.05),0_4px_14px_-6px_rgba(44,5,72,.25)]"
+        className={`group flex items-center gap-2 rounded-full bg-white py-1.5 pl-1.5 pr-3 transition-all duration-200 hover:-translate-y-px hover:shadow-pop ${
+          open ? "shadow-lift ring-3 ring-purple-100" : "shadow-lift"
         }`}
       >
         <Coin code={value} size={30} />
@@ -155,7 +156,7 @@ export function AssetPicker({
 
       {open && (
         <div
-          className={`absolute right-0 z-40 w-[min(320px,calc(100vw-56px))] rounded-[26px] bg-white p-2 text-ink-900 shadow-[0_30px_70px_-20px_rgba(44,5,72,.5),0_0_0_1px_rgba(32,31,31,.06)] animate-pop ${
+          className={`absolute right-0 z-40 w-[min(320px,calc(100vw-56px))] rounded-card bg-white p-2 text-ink-900 shadow-pop animate-pop ${
             up ? "bottom-full mb-2.5 origin-bottom-right" : "top-full mt-2.5 origin-top-right"
           }`}
         >
@@ -175,25 +176,21 @@ export function AssetPicker({
                 setActive(0);
               }}
               onKeyDown={onKey}
-              className="w-full rounded-[18px] bg-paper py-3 pl-10 pr-3 text-[14px] font-medium outline-none ring-purple-200 transition-shadow placeholder:text-ink-300 focus:ring-2"
+              className="w-full rounded-chip bg-paper py-3 pl-10 pr-3 text-[14px] font-medium outline-none ring-purple-200 transition-shadow placeholder:text-ink-300 focus:ring-2"
             />
           </div>
 
-          <div className="mt-2 grid grid-cols-3 gap-1 rounded-[16px] bg-paper p-1 text-[12px] font-semibold">
-            {TABS.map((t) => (
-              <button
-                key={t.key}
-                type="button"
-                onClick={() => {
-                  setTab(t.key);
-                  setActive(0);
-                }}
-                className={`rounded-[12px] py-1.5 transition-colors ${tab === t.key ? "bg-white text-ink-900 shadow-sm" : "text-ink-400 hover:text-ink-700"}`}
-              >
-                {t.label}
-              </button>
-            ))}
-          </div>
+          <Segmented
+            className="mt-2"
+            size="sm"
+            label="Asset type"
+            value={tab}
+            onChange={(t) => {
+              setTab(t);
+              setActive(0);
+            }}
+            options={TABS.map((t) => ({ value: t.key, label: t.label }))}
+          />
 
           <ul ref={list} id={`${id}-list`} role="listbox" style={{ position: "relative" }} aria-label={label} data-lenis-prevent className="mt-1 max-h-[264px] overflow-y-auto overscroll-contain py-1 [scrollbar-width:thin]">
             {groups.map((g) => (
@@ -216,7 +213,7 @@ export function AssetPicker({
                         data-index={index}
                         onPointerEnter={() => setActive(index)}
                         onClick={() => pick(a.code)}
-                        className={`flex cursor-pointer items-center gap-3 rounded-[16px] px-2.5 py-2 transition-colors ${
+                        className={`flex cursor-pointer items-center gap-3 rounded-chip px-2.5 py-2 transition-colors ${
                           index === active ? "bg-purple-50" : ""
                         }`}
                       >
