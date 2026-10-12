@@ -1,4 +1,12 @@
+import type { StaticImageData } from "next/image";
 import { SafeImage } from "@/components/SafeImage";
+import cashpoint from "@/public/app/cashpoint.webp";
+import cryptoShot from "@/public/app/crypto.webp";
+import home from "@/public/app/home.webp";
+import send from "@/public/app/send.webp";
+import swap from "@/public/app/swap.webp";
+import usd from "@/public/app/usd.webp";
+import vault from "@/public/app/vault.webp";
 
 /**
  * Real screenshots of the Tribe app, captured from its build at iPhone size by
@@ -16,11 +24,18 @@ export const APP_SCREENS = {
 
 export type AppScreenName = keyof typeof APP_SCREENS;
 
+/**
+ * Static imports, not "/app/x.webp" strings: the build puts a content hash in each URL, so a
+ * re-capture can never be served from a stale browser/CDN/optimizer cache (desktop kept showing
+ * the old shots at its image width while mobile fetched fresh ones).
+ */
+const SRC: Record<AppScreenName, StaticImageData> = { home, crypto: cryptoShot, usd, swap, send, cashpoint, vault };
+
 /** Fills a PhoneFrame with one of the screenshots. `priority` for the hero phone only. */
 export function AppScreen({ name, priority = false }: { name: AppScreenName; priority?: boolean }) {
   return (
     <SafeImage
-      src={`/app/${name}.webp`}
+      src={SRC[name]}
       alt={APP_SCREENS[name]}
       fill
       priority={priority}
