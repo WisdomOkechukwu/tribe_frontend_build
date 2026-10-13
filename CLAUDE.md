@@ -16,7 +16,7 @@ Single-page marketing site for **Tribe**, a Gen-Z African mobile wallet. Next 16
 ## Run
 Homebrew Node on this machine is broken (missing ICU dylib). Prefix every command:
 ```sh
-export PATH=~/.nvm/versions/node/v24.19.0/bin:$PATH
+export PATH=~/.nvm/versions/node/v24.21.0/bin:$PATH
 npm run dev            # http://localhost:3000
 npm run lint && npx tsc --noEmit && npm run build
 ```
