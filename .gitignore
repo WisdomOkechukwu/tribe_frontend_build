@@ -20,6 +20,7 @@
 # production
 /build
 /tribe-mobile
+/tribe-admin
 
 # misc
 .DS_Store

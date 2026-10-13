@@ -14,6 +14,8 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // Separate Expo project, gitignored — it has its own tooling.
     "tribe-mobile/**",
+    // Separate Next app (admin dashboard), gitignored — it has its own tooling.
+    "tribe-admin/**",
   ]),
 ]);
 

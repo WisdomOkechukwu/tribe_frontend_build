@@ -91,7 +91,7 @@ const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
 
 // fresh seed data, signed in to the demo account, set up and verified (`showcase`: Home shows
-// no "verify" to-do), with a fresh lastActiveAt so the 10-minute app lock never shows
+// no "Finish setup" card)
 await page.goto(`${APP}/intro`, { waitUntil: "networkidle0" });
 await page.evaluate(() => localStorage.clear());
 await page.goto(`${APP}/dev?action=showcase`, { waitUntil: "networkidle0" });
