@@ -6,7 +6,7 @@
 //   npm run check:visual                         # BASE_URL, CHROME_PATH, REDUCE=1 are optional
 //
 // Exits non-zero on console errors or horizontal overflow.
-import { mkdirSync, readdirSync, rmSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, rmSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { createRequire } from "node:module";
@@ -21,9 +21,16 @@ const REDUCE = process.env.REDUCE === "1";
 
 function findChrome() {
   if (process.env.CHROME_PATH) return process.env.CHROME_PATH;
-  const root = join(homedir(), ".cache/puppeteer/chrome");
+  const cache = join(homedir(), ".cache/puppeteer");
+  // full Chrome for Testing if it's installed, else the headless shell puppeteer also ships
+  if (existsSync(join(cache, "chrome"))) {
+    const root = join(cache, "chrome");
+    const version = readdirSync(root).sort().pop();
+    return join(root, version, "chrome-mac-x64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing");
+  }
+  const root = join(cache, "chrome-headless-shell");
   const version = readdirSync(root).sort().pop();
-  return join(root, version, "chrome-mac-x64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing");
+  return join(root, version, "chrome-headless-shell-mac-x64/chrome-headless-shell");
 }
 
 const VIEWPORTS = [

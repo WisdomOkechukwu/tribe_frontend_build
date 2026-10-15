@@ -31,8 +31,8 @@ export function AssetPicker({
   label,
 }: {
   value: string;
-  /** The asset on the other side of the swap — picking it flips the pair. */
-  other: string;
+  /** The asset on the other side of a swap — picking it flips the pair. Omit outside a swap. */
+  other?: string;
   onChange: (code: string) => void;
   label: string;
 }) {
@@ -203,7 +203,7 @@ export function AssetPicker({
                     flat += 1;
                     const index = flat;
                     const selected = a.code === value;
-                    const isOther = a.code === other;
+                    const isOther = !!other && a.code === other;
                     return (
                       <li
                         key={a.code}

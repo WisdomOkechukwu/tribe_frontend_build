@@ -17,8 +17,8 @@ import { useVelocityMarquee } from "@/lib/useVelocityMarquee";
 import street from "@/public/images/pay-street.jpg";
 
 const GIFT_POINTS = [
-  "Pay with USDT, BTC, dollars or Naira",
-  "Trade in unused cards for Naira or USDT",
+  "Pay from any balance: crypto, dollars or Naira",
+  "Trade in unused cards for any currency, crypto too",
   "Codes land in the app the second you pay",
 ];
 

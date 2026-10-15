@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Coin } from "@/components/Coin";
+import { AssetPicker } from "@/components/AssetPicker";
 import { BrandMark, GiftCard } from "@/components/GiftCard";
 import { Button } from "@/components/ui/Button";
 import { Segmented } from "@/components/ui/Segmented";
@@ -11,7 +11,6 @@ import { DOWNLOAD_PATH } from "@/lib/site";
 
 const PICK = ["steam", "apple", "playstation", "amazon", "spotify", "netflix"];
 const AMOUNTS = [25, 50, 100];
-const PAY_WITH = ["USDT", "BTC", "NGN", "USD"];
 
 type Mode = "buy" | "sell";
 
@@ -20,12 +19,15 @@ export function GiftCardDemo() {
   const [brand, setBrand] = useState("steam");
   const [amount, setAmount] = useState(100);
   const [payWith, setPayWith] = useState("USDT");
+  // Selling pays out in any currency, crypto too: the ₦/$ rate sets the value, then it converts.
+  const [payout, setPayout] = useState("NGN");
 
   const b = giftBrand(brand);
   const pay = assetByCode(payWith);
+  const out = assetByCode(payout);
   const costUsd = amount * (1 + GIFT_CARD_BUY_MARKUP);
   const sellNgn = amount * b.sellRate;
-  const sellUsdt = sellNgn * assetByCode("NGN").usd;
+  const sellOut = (sellNgn * assetByCode("NGN").usd) / out.usd;
 
   return (
     <div className="w-full max-w-[520px] rounded-panel bg-white p-3 text-ink-900 shadow-float">
@@ -70,21 +72,9 @@ export function GiftCardDemo() {
         <div className="mt-4 rounded-card bg-paper p-4" aria-live="polite">
           {mode === "buy" ? (
             <>
-              <div className="flex items-center justify-between">
-                <span className="text-[13px] text-ink-400">Pay with</span>
-                <div className="flex gap-1.5">
-                  {PAY_WITH.map((c) => (
-                    <button
-                      key={c}
-                      onClick={() => setPayWith(c)}
-                      aria-pressed={payWith === c}
-                      aria-label={`Pay with ${c}`}
-                      className={`rounded-full transition-all ${payWith === c ? "ring-2 ring-orange-500 ring-offset-2" : "opacity-60 hover:opacity-100"}`}
-                    >
-                      <Coin code={c} size={28} />
-                    </button>
-                  ))}
-                </div>
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-[13px] text-ink-400">Pay with any balance</span>
+                <AssetPicker label="Pay with" value={payWith} onChange={setPayWith} />
               </div>
               <div className="mt-3 flex items-baseline justify-between">
                 <span className="text-[13px] text-ink-400">You pay</span>
@@ -96,16 +86,21 @@ export function GiftCardDemo() {
             </>
           ) : (
             <>
-              <div className="flex items-baseline justify-between">
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-[13px] text-ink-400">Get paid in any currency</span>
+                <AssetPicker label="Get paid in" value={payout} onChange={setPayout} />
+              </div>
+              <div className="mt-3 flex items-baseline justify-between">
                 <span className="text-[13px] text-ink-400">You get</span>
-                <span className="font-display text-3xl font-extrabold tracking-tight text-purple-700">₦{formatAmount(sellNgn, 0)}</span>
+                <span className="font-display text-3xl font-extrabold tracking-tight text-purple-700">
+                  {formatAmount(sellOut, payout === "NGN" ? 0 : out.decimals)} <span className="text-lg text-ink-400">{out.code}</span>
+                </span>
               </div>
-              <div className="mt-1 flex items-baseline justify-between text-[13px]">
-                <span className="text-ink-300">or in USDT</span>
-                <span className="font-semibold text-ink-600">{formatAmount(sellUsdt, 2)} USDT</span>
-              </div>
-              <p className="mt-2 text-right text-[12px] text-ink-300">
-                ₦{b.sellRate.toLocaleString()}/$ · paid out in minutes
+              <p className="mt-1 text-right text-[12px] text-ink-300">
+                ${amount} × ₦{b.sellRate.toLocaleString()}/$ = ₦{formatAmount(sellNgn, 0)}
+                {payout !== "NGN" && ` → ${out.code} at today's rate`}
+                <br />
+                Paid out in minutes
               </p>
             </>
           )}

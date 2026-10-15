@@ -37,6 +37,13 @@ const STEPS: { kicker: string; title: string; body: string; screen: AppScreenNam
     bg: "#f0e7f7",
   },
   {
+    kicker: "Gift cards",
+    title: "Old gift card? Cash it out.",
+    body: "Trade unused Apple, Steam, Amazon cards and more, and get paid in any currency you like: Naira, dollars, pounds, USDT, even BTC. Fair rates, paid out in minutes.",
+    screen: "gift",
+    bg: "#ffe8e8",
+  },
+  {
     kicker: "Cashpoints",
     title: "Cash, packed into 12 digits.",
     body: "Turn Naira into a Cashpoint code and hand it to anyone. Tribe users redeem it instantly; new users redeem it the moment they sign up.",

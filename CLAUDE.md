@@ -6,7 +6,7 @@ Single-page marketing site for **Tribe**, a Gen-Z African mobile wallet. Next 16
 
 ## Product truths (don't get these wrong in copy)
 - **Crypto wallet** (BTC, ETH, USDT, USDC, SOL…) + **global fiat accounts** (USD, GBP, EUR…) + **swap anything ↔ anything**.
-- **Gift cards: Tribe both buys AND sells them.** Pay with crypto/fiat, or trade unused cards for NGN/USDT.
+- **Gift cards: Tribe both buys AND sells them.** Pay with crypto/fiat, or trade unused cards for any currency (fiat or crypto).
 - **Bills & utilities:** airtime, data, TV, electricity. **Recurring bills are live** (weekly, every 2 weeks or monthly, paid from any balance) — the mobile app offers it right after a bill is paid.
 - **Token Vault:** every electricity token is saved; users mark tokens loaded/used so they never lose one.
 - **Virtual cards** funded from any balance.
@@ -87,7 +87,7 @@ Every download CTA links to `/download`. `app/download/route.ts` sends Apple dev
 The phones on the page show the real mobile app. To refresh them after the app's UI changes:
 ```sh
 (cd tribe-mobile && npx expo start --web --port 8084 --clear) &   # wait for "Waiting on http://localhost:8084"
-npm run capture:app                                               # → public/app/{home,crypto,usd,swap,send,cashpoint,vault}.webp
+npm run capture:app                                               # → public/app/{home,crypto,usd,swap,send,cashpoint,vault,gift}.webp
 ```
 `scripts/capture-app-screens.mjs` clears the app's storage (fresh seed data), signs in through `/dev?action=showcase` (demo account, verified, fresh `lastActiveAt` so the app lock never shows), emulates iPhone safe areas (59/34pt) at 393×876 (PhoneFrame's screen aspect), draws a 9:41 status bar and home indicator, and writes WebP at 786px wide. Add or change a shot in its `SCREENS` list and the alt text in `components/phone/AppScreen.tsx`. `AppScreen` imports the shots statically, so each re-capture gets a new content-hashed URL and no browser, CDN or optimiser cache can serve a stale one. Add a new shot there as an import, not a `/app/…` string.
 

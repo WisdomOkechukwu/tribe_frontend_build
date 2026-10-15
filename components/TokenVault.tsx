@@ -22,8 +22,11 @@ const INITIAL: Token[] = [
   { id: "d", provider: "PHED Prepaid", meter: "4502 •••• 19", amount: "₦5,000", kwh: 11.4, token: "3398 1027 6645 2210 7781", bought: "Sun 21 Sep", loadedOn: "21 Sep" },
 ];
 
+const ROUTINE = ["Copy", "Type it in", "Tick it off"];
+
 /**
- * The Token Vault, as the app does it: tokens to load (number, Copy, "I've loaded it") and a
+ * The Token Vault, as the app does it: a purple summary (kWh waiting, Copy → Type it in →
+ * Tick it off), tokens to load (4-digit blocks, tap to copy, "I've loaded it") and a
  * Loaded list with Undo. Deliberately static — no motion, so it reads like a tool, not a show.
  */
 export function TokenVault() {
@@ -33,6 +36,7 @@ export function TokenVault() {
   const waiting = tokens.filter((t) => !t.loadedOn);
   const loaded = tokens.filter((t) => t.loadedOn);
   const kwh = waiting.reduce((s, t) => s + t.kwh, 0);
+  const loadedKwh = loaded.reduce((s, t) => s + t.kwh, 0);
 
   const toggle = (id: string) => setTokens((ts) => ts.map((t) => (t.id === id ? { ...t, loadedOn: t.loadedOn ? null : "today" } : t)));
 
@@ -53,18 +57,30 @@ export function TokenVault() {
         <span className="rounded-full bg-ink-50 px-2.5 py-1 text-[11px] font-medium text-ink-500">Live demo: tap around</span>
       </div>
 
-      <div className={`mt-4 flex items-center gap-3 rounded-card px-4 py-3 ${waiting.length ? "bg-orange-50" : "bg-success-50"}`} role="status">
-        <span className={`grid size-9 shrink-0 place-items-center rounded-full text-white ${waiting.length ? "bg-orange-500" : "bg-success-500"}`}>
-          <Icon name={waiting.length ? "bolt" : "check"} className="size-[18px]" />
-        </span>
-        <div className="leading-tight">
-          <p className="text-[14px] font-semibold text-ink-900">
-            {waiting.length ? `${waiting.length} token${waiting.length > 1 ? "s" : ""} to load · ${kwh.toFixed(1)} kWh` : "All tokens are loaded"}
+      {/* The app's summary: what's waiting, in kWh, and the three-step routine. */}
+      <div className="relative mt-4 overflow-hidden rounded-card bg-purple-900 p-5" role="status">
+        <div className="stripes pointer-events-none absolute inset-y-0 right-0 w-[38%] opacity-85 [--stripe-w:12px]" />
+        <div className="relative">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-orange-300">
+            {waiting.length ? `${waiting.length} token${waiting.length > 1 ? "s" : ""} to load` : "All caught up"}
           </p>
-          <p className="mt-0.5 text-[12px] text-ink-400">
-            {waiting.length ? "Type each one into your meter, then tick it off." : "New tokens from PHED payments are saved here automatically."}
+          <p className="mt-1 font-display text-5xl font-extrabold tracking-tight text-white">
+            {(waiting.length ? kwh : loadedKwh).toFixed(1)} <span className="text-xl text-purple-100">kWh</span>
+          </p>
+          <p className="mt-1 max-w-[62%] text-[12px] leading-snug text-purple-100">
+            {waiting.length ? "waiting for your meter" : "loaded so far. New PHED tokens land here the moment you pay."}
           </p>
         </div>
+        {waiting.length > 0 && (
+          <ol className="relative mt-4 flex flex-wrap gap-1.5">
+            {ROUTINE.map((label, i) => (
+              <li key={label} className="flex items-center gap-1.5 rounded-full bg-purple-800 py-1.5 pl-1.5 pr-3">
+                <span className="grid size-5 shrink-0 place-items-center rounded-full bg-white text-[11px] font-semibold text-purple-900">{i + 1}</span>
+                <span className="whitespace-nowrap text-[12px] font-semibold text-white">{label}</span>
+              </li>
+            ))}
+          </ol>
+        )}
       </div>
 
       {waiting.length > 0 && (
@@ -87,13 +103,20 @@ export function TokenVault() {
                   </div>
                 </div>
 
-                <div className="mt-3 flex items-center gap-2 rounded-chip bg-white py-1 pl-3 pr-1">
-                  <p className="min-w-0 flex-1 truncate font-mono text-[13.5px] tracking-wide text-ink-900 sm:text-[15px] sm:tracking-wider">{t.token}</p>
-                  <button onClick={() => copy(t)} className="flex shrink-0 items-center gap-1 rounded-full px-3 py-1.5 text-[12px] font-semibold text-purple-600 hover:bg-purple-50" aria-label={`Copy token ${t.token}`}>
-                    <Icon name={copied === t.id ? "check" : "copy"} className="size-4" />
-                    {copied === t.id ? "Copied" : "Copy"}
-                  </button>
-                </div>
+                {/* As in the app: the token in 4-digit blocks, and the whole number is the copy button. */}
+                <button onClick={() => copy(t)} className="press mt-3 block w-full" aria-label={`Copy token ${t.token}`}>
+                  <span className="grid grid-cols-5 gap-1.5">
+                    {t.token.split(" ").map((chunk, i) => (
+                      <span key={i} className="rounded-chip bg-ink-50 py-2 text-center font-mono text-[14px] font-semibold tabular-nums text-ink-900 sm:text-[16px]">
+                        {chunk}
+                      </span>
+                    ))}
+                  </span>
+                  <span className={`mt-2 flex items-center justify-center gap-1 text-[12px] font-medium ${copied === t.id ? "text-success-600" : "text-ink-400"}`}>
+                    <Icon name={copied === t.id ? "check" : "copy"} className="size-3.5" />
+                    {copied === t.id ? "Copied" : "Tap to copy"}
+                  </span>
+                </button>
 
                 <button onClick={() => toggle(t.id)} className="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-purple-600 py-2.5 text-[13px] font-semibold text-white hover:bg-purple-700">
                   <Icon name="check" className="size-4" />

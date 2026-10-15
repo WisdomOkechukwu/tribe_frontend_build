@@ -13,7 +13,7 @@ const STEPS = [
   },
   {
     title: "Unloaded tokens wait up top",
-    body: "Anything you haven't punched in sits under “To load” with a one-tap Copy, so units you paid for never go missing.",
+    body: "Anything you haven't punched in sits under “To load”. Tap the number to copy it, so units you paid for never go missing.",
   },
   {
     title: "Tap “I've loaded it” and it moves to Loaded",

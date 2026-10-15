@@ -7,7 +7,7 @@
 //   npm run capture:app                          # APP_URL, CHROME_PATH are optional
 //
 // Uses the app's seeded demo data, signed in through its dev route and marked verified, in light mode.
-import { mkdirSync, readdirSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { createRequire } from "node:module";
@@ -21,9 +21,16 @@ const OUT = join(process.cwd(), "public/app");
 
 function findChrome() {
   if (process.env.CHROME_PATH) return process.env.CHROME_PATH;
-  const root = join(homedir(), ".cache/puppeteer/chrome");
+  const cache = join(homedir(), ".cache/puppeteer");
+  // full Chrome for Testing if it's installed, else the headless shell puppeteer also ships
+  if (existsSync(join(cache, "chrome"))) {
+    const root = join(cache, "chrome");
+    const version = readdirSync(root).sort().pop();
+    return join(root, version, "chrome-mac-x64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing");
+  }
+  const root = join(cache, "chrome-headless-shell");
   const version = readdirSync(root).sort().pop();
-  return join(root, version, "chrome-mac-x64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing");
+  return join(root, version, "chrome-headless-shell-mac-x64/chrome-headless-shell");
 }
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -31,7 +38,10 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 // 393 × 876 matches PhoneFrame's screen aspect, so nothing is cropped inside the frame.
 const VIEWPORT = { width: 393, height: 876, deviceScaleFactor: 3, isMobile: true, hasTouch: true };
 
-/** name → route, plus taps to put the screen in a telling state */
+/**
+ * name → route, plus taps to put the screen in a telling state. A tap is an exact label, or
+ * `{ fill: [placeholder, text] }` to type into a field, or `{ scroll: px }` to scroll the screen.
+ */
 const SCREENS = [
   { name: "home", path: "/" },
   { name: "crypto", path: "/wallet", taps: ["Crypto"] },
@@ -41,6 +51,12 @@ const SCREENS = [
   { name: "send", path: "/dev?action=showcase&demo=send&to=/send/amount", taps: ["2", "0", "0"] },
   { name: "cashpoint", path: "/cashpoint", taps: ["₦5k"] },
   { name: "vault", path: "/pay/vault" },
+  // selling pays out in any currency: switch the payout from Naira to US dollars
+  {
+    name: "gift",
+    path: "/gift/apple?mode=sell",
+    taps: [{ fill: ["XXXX-XXXX-XXXX-XXXX", "X7KQ9M2PL4RT8WVZ"] }, "Get paid in: Naira", "Pick USD", { scroll: 330 }],
+  },
 ];
 
 const INK = "#000000";
@@ -62,6 +78,24 @@ async function tap(page, label) {
     await sleep(200);
   }
   throw new Error(`nothing to tap for "${label}"`);
+}
+
+async function step(page, s) {
+  if (typeof s === "string") return tap(page, s);
+  if (s.fill) {
+    const [placeholder, text] = s.fill;
+    await page.waitForSelector(`[placeholder="${placeholder}"]`, { visible: true });
+    await page.type(`[placeholder="${placeholder}"]`, text);
+    await page.evaluate(() => document.activeElement?.blur());
+    return sleep(300);
+  }
+  if (s.scroll) {
+    // RN web screens scroll inside their own ScrollView, not the window: wheel over its middle
+    await page.mouse.move(VIEWPORT.width / 2, VIEWPORT.height / 2);
+    await page.mouse.wheel({ deltaY: s.scroll });
+    return sleep(600);
+  }
+  throw new Error(`unknown step ${JSON.stringify(s)}`);
 }
 
 async function drawChrome(page) {
@@ -100,7 +134,7 @@ await sleep(1800);
 for (const s of SCREENS) {
   await page.goto(`${APP}${s.path}`, { waitUntil: "networkidle0" });
   await sleep(1600);
-  for (const label of s.taps ?? []) await tap(page, label);
+  for (const t of s.taps ?? []) await step(page, t);
   await sleep(700);
   await drawChrome(page);
   const png = await page.screenshot();

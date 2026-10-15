@@ -39,7 +39,8 @@ function TribeCard() {
 
 const POINTS = [
   "Fund it with USDT, BTC, dollars or Naira",
-  "Seven finishes, Mastercard or Visa",
+  "Seven finishes, or design your own. Mastercard or Visa",
+  "Add it to Apple Pay or Google Pay",
   "Pay Netflix, Spotify, ChatGPT, AliExpress and more",
   "Freeze, unfreeze or bin it in one tap",
 ];
