@@ -16,7 +16,7 @@ import vault from "@/public/app/vault.webp";
 export const APP_SCREENS = {
   home: "Tribe home screen: a ₦8.3m total balance, Receive, Send, Swap and More, and the assets list",
   crypto: "Tribe wallet on its Fiat | Crypto switch, set to Crypto: Bitcoin, Tether, Ethereum and more with their Naira value",
-  usd: "A US dollar account in Tribe: $1,240 balance, Receive, Send and Swap, account and routing numbers, and how it works in three taps",
+  usd: "A US dollar account in Tribe: $1,240 balance, Receive, Send and Swap, account and routing numbers, and today's +$450 ACH transfer from Upwork",
   swap: "Swapping 250 USDT to Naira in Tribe, with the live rate, its 30-second countdown and the swap fee",
   send: "Sending £200 to Amara Obi's UK bank account from a pound balance, arriving usually instantly",
   cashpoint: "Generating a ₦5,000 Cashpoint: a 12-digit code anyone can redeem",

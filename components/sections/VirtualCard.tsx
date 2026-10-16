@@ -8,31 +8,29 @@ import { Icon } from "@/components/Icon";
 import { Button } from "@/components/ui/Button";
 import { gsap, MOTION_OK, useGSAP } from "@/lib/gsap";
 import { DOWNLOAD_PATH } from "@/lib/site";
+import cardFace from "@/public/app/card.webp";
 import cardOnline from "@/public/images/card-online.jpg";
 
+/**
+ * The app's default card (Midnight, Mastercard, Apple Pay pill), cut from the Cards tab by
+ * `npm run capture:app`: never redraw it in HTML. The radius is the app's (22pt on the Cards tab's 361pt card)
+ * in percentages, so the shadow hugs the image's own corners at any width.
+ */
 function TribeCard() {
   // Physical-card depth is a deliberate one-off, deeper than --shadow-float.
   return (
-    <div className="relative aspect-[1.586] w-[min(88vw,420px)] overflow-hidden rounded-card bg-purple-900 p-6 text-white shadow-[0_60px_80px_-40px_rgba(44,5,72,.8),inset_0_1px_0_rgba(255,255,255,.15)]">
-      <div className="stripes absolute -right-16 -top-20 h-[140%] w-[80%] [--stripe-w:30px]" />
-      <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_0%_100%,rgba(44,5,72,.95)_30%,transparent_70%)]" />
-      <div className="relative flex h-full flex-col justify-between">
-        <div className="flex items-start justify-between">
-          <span className="text-[17px] font-semibold tracking-[0.3em] text-orange-400">TRIBE</span>
-          <span className="rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider">Virtual · USD</span>
-        </div>
-        <div className="h-9 w-12 rounded-md bg-[linear-gradient(135deg,#ffe678,#b59b26)] opacity-90" />
-        <div className="flex items-end justify-between">
-          <div>
-            <p className="font-mono text-[15px] tracking-[0.18em]">•••• •••• •••• 4821</p>
-            <p className="mt-1 text-[11px] text-purple-100">ADA OKAFOR · 09/29</p>
-          </div>
-          <div className="flex -space-x-3">
-            <span className="size-8 rounded-full bg-orange-500/90" />
-            <span className="size-8 rounded-full bg-purple-300/90" />
-          </div>
-        </div>
-      </div>
+    <div
+      style={{ borderRadius: "6.1% / 9.6%" }}
+      className="relative aspect-[1.586] w-[min(88vw,420px)] overflow-hidden bg-purple-900 shadow-[0_60px_80px_-40px_rgba(44,5,72,.8)]"
+    >
+      <SafeImage
+        src={cardFace}
+        alt="A Tribe virtual card in the default Midnight finish: the Tribe logo, Apple Pay, Ada Okafor and Mastercard"
+        fill
+        sizes="(min-width: 640px) 420px, 88vw"
+        className="object-cover"
+        fallbackLabel="Tribe"
+      />
     </div>
   );
 }
